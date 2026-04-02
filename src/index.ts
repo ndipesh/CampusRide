@@ -1,20 +1,38 @@
 import express, { Express } from 'express';
-import './config.js'; // do not remove this line
+import './config.js';
+import {
+  createRideAvailability,
+  deleteRideAvailability,
+  getRideAvailabilities,
+  getRideAvailability,
+  updateRideAvailability,
+} from './controllers/RideAvailabilityController.js';
+import {
+  createRideRequest,
+  deleteRideRequest,
+  getRideRequest,
+  getRideRequests,
+  updateRideRequest,
+} from './controllers/RideRequestController.js';
 import { sessionMiddleware } from './sessionConfig.js';
 
 const app: Express = express();
-
-app.use(sessionMiddleware); // Setup session management middleware
-app.use(express.json()); // Setup JSON body parsing middleware
-app.use(express.urlencoded({ extended: false })); // Setup urlencoded (HTML Forms) body parsing middleware
-
-// Setup static resource file middleware
-// This allows the client to access any file inside the `public` directory
-// Only put file that you actually want to be publicly accessibly in the `public` folder
+app.use(sessionMiddleware);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public', { extensions: ['html'] }));
 
-// -- Routes --------------------------------------------------
-// Register your routes below this line
+app.post('/rideAvailabilities', createRideAvailability);
+app.get('/rideAvailabilities', getRideAvailabilities);
+app.get('/rideAvailabilities/:rideAvailabilityId', getRideAvailability);
+app.put('/rideAvailabilities/:rideAvailabilityId', updateRideAvailability);
+app.delete('/rideAvailabilities/:rideAvailabilityId', deleteRideAvailability);
+
+app.post('/rideRequests', createRideRequest);
+app.get('/rideRequests', getRideRequests);
+app.get('/rideRequests/:rideRequestId', getRideRequest);
+app.put('/rideRequests/:rideRequestId', updateRideRequest);
+app.delete('/rideRequests/:rideRequestId', deleteRideRequest);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server listening on http://localhost:${process.env.PORT}`);
