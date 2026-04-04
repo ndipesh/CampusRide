@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "PET",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
