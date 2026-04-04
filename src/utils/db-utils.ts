@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+export function parseDatabaseError(error: unknown): { status: number; message: string } {
+  return {
+    status: 500,
+    message: 'Database error',
+  };
+}
+=======
 import { QueryFailedError } from 'typeorm';
 
 function parseDatabaseError(err: unknown): DatabaseConstraintError {
@@ -64,3 +72,4 @@ function parseDatabaseError(err: unknown): DatabaseConstraintError {
 }
 
 export { parseDatabaseError };
+>>>>>>> 60944adce58517649f9926934d658d8b244ac9ab
