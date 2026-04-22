@@ -1,12 +1,9 @@
-import "express-session";
+import 'express-session';
 
-declare module "express-session" {
-  interface SessionData {
-    isLoggedIn?: boolean;
-    authenticatedUser?: {
-      userId: string;
-      email: string;
-      role: string;
-    };
+declare module 'express-session' {
+  export interface Session {
+    clearSession(): Promise<void>; // DO NOT MODIFY THIS!
+
+    // NOTES: Add your app's custom session properties here:
   }
 }
