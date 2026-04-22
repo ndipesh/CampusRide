@@ -14,7 +14,6 @@ import {
 
 async function createRideRequest(req: Request, res: Response): Promise<void> {
   const result = CreateRideRequestSchema.safeParse(req.body);
-
   if (!result.success) {
     res.status(400).json({ errors: result.error });
     return;
@@ -39,9 +38,9 @@ async function getRideRequests(req: Request, res: Response): Promise<void> {
 }
 
 async function getRideRequest(req: Request, res: Response): Promise<void> {
-  const { rideRequestId } = req.params;
-  const rideRequest = await getRideRequestById(rideRequestId);
+  const { rideRequestId } = req.params as { rideRequestId: string };
 
+  const rideRequest = await getRideRequestById(rideRequestId);
   if (!rideRequest) {
     res.status(404).json({ error: 'Ride request not found' });
     return;
@@ -51,10 +50,9 @@ async function getRideRequest(req: Request, res: Response): Promise<void> {
 }
 
 async function updateRideRequest(req: Request, res: Response): Promise<void> {
-  const { rideRequestId } = req.params;
+  const { rideRequestId } = req.params as { rideRequestId: string };
 
   const result = UpdateRideRequestSchema.safeParse(req.body);
-
   if (!result.success) {
     res.status(400).json({ errors: result.error });
     return;
@@ -64,12 +62,10 @@ async function updateRideRequest(req: Request, res: Response): Promise<void> {
 
   try {
     const updatedRideRequest = await updateRideRequestStatus(rideRequestId, status);
-
     if (!updatedRideRequest) {
       res.status(404).json({ error: 'Ride request not found' });
       return;
     }
-
     res.json({ rideRequest: updatedRideRequest });
   } catch (err) {
     console.error(err);
@@ -79,9 +75,9 @@ async function updateRideRequest(req: Request, res: Response): Promise<void> {
 }
 
 async function deleteRideRequest(req: Request, res: Response): Promise<void> {
-  const { rideRequestId } = req.params;
-  const rideRequest = await getRideRequestById(rideRequestId);
+  const { rideRequestId } = req.params as { rideRequestId: string };
 
+  const rideRequest = await getRideRequestById(rideRequestId);
   if (!rideRequest) {
     res.status(404).json({ error: 'Ride request not found' });
     return;
@@ -92,4 +88,3 @@ async function deleteRideRequest(req: Request, res: Response): Promise<void> {
 }
 
 export { createRideRequest, deleteRideRequest, getRideRequest, getRideRequests, updateRideRequest };
-
