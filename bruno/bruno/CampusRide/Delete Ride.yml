@@ -1,0 +1,15 @@
+info:
+  name: "Delete Ride "
+  type: http
+  seq: 10
+
+http:
+  method: DELETE
+  url: http://localhost:3000/rideAvailabilities/019d8f21-4fac-7718-abd0-faaa7d469016
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

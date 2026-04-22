@@ -1,0 +1,25 @@
+info:
+  name: Register User(Driver)
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/users
+  body:
+    type: json
+    data: |-
+      {
+        "email": "ndipesh58@gmail.com",
+        "password": "password123",
+        "role": "user",
+        "displayName": "Dipesh",
+        "bio": "I am a driver"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,25 @@
+info:
+  name: Update Ride
+  type: http
+  seq: 9
+
+http:
+  method: PUT
+  url: http://localhost:3000/rideAvailabilities/019d8f21-4fac-7718-abd0-faaa7d469016
+  body:
+    type: json
+    data: |-
+      {
+        "pickupLocation": "ASU Library",
+        "destination": "Walmart",
+        "departureTime": "2026-04-15T09:00:00.000Z",
+        "availableSeats": 2,
+        "notes": "Updated pickup location"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

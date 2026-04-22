@@ -1,0 +1,22 @@
+info:
+  name: Create Ride Request
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:3000/rideRequests
+  body:
+    type: json
+    data: |-
+      {
+        "rideAvailabilityId": "019d8f21-4fac-7718-abd0-faaa7d469016",
+        "riderId": "019d8f1b-2d30-76fd-aae2-6f1b817e2592"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
