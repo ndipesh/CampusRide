@@ -25,7 +25,7 @@ export class RideAvailability {
   @Column()
   driverId: string;
 
-  @ManyToOne(() => User, (user) => user.userId)
+  @ManyToOne(() => User)
   driver: Relation<User>;
 
   @Column()

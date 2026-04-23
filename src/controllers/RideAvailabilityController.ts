@@ -14,7 +14,6 @@ import {
 
 async function createRideAvailability(req: Request, res: Response): Promise<void> {
   const result = CreateRideAvailabilitySchema.safeParse(req.body);
-
   if (!result.success) {
     res.status(400).json({ errors: result.error });
     return;
@@ -42,40 +41,26 @@ async function createRideAvailability(req: Request, res: Response): Promise<void
 }
 
 async function getRideAvailabilities(req: Request, res: Response): Promise<void> {
-  try {
-    const rides = await getAllRideAvailabilities();
-    res.json({ rides });
-  } catch (err) {
-    console.error(err);
-    const databaseErrorMessage = parseDatabaseError(err);
-    res.status(500).json(databaseErrorMessage);
-  }
+  const rides = await getAllRideAvailabilities();
+  res.json({ rides });
 }
 
 async function getRideAvailability(req: Request, res: Response): Promise<void> {
-  const { rideAvailabilityId } = req.params;
+  const { rideAvailabilityId } = req.params as { rideAvailabilityId: string };
 
-  try {
-    const ride = await getRideAvailabilityById(rideAvailabilityId);
-
-    if (!ride) {
-      res.status(404).json({ error: 'Ride not found' });
-      return;
-    }
-
-    res.json({ ride });
-  } catch (err) {
-    console.error(err);
-    const databaseErrorMessage = parseDatabaseError(err);
-    res.status(500).json(databaseErrorMessage);
+  const ride = await getRideAvailabilityById(rideAvailabilityId);
+  if (!ride) {
+    res.status(404).json({ error: 'Ride not found' });
+    return;
   }
+
+  res.json({ ride });
 }
 
 async function updateRideAvailability(req: Request, res: Response): Promise<void> {
-  const { rideAvailabilityId } = req.params;
+  const { rideAvailabilityId } = req.params as { rideAvailabilityId: string };
 
   const result = UpdateRideAvailabilitySchema.safeParse(req.body);
-
   if (!result.success) {
     res.status(400).json({ errors: result.error });
     return;
@@ -92,12 +77,10 @@ async function updateRideAvailability(req: Request, res: Response): Promise<void
       availableSeats,
       notes ?? null,
     );
-
     if (!updatedRide) {
       res.status(404).json({ error: 'Ride not found' });
       return;
     }
-
     res.json({ ride: updatedRide });
   } catch (err) {
     console.error(err);
@@ -107,9 +90,9 @@ async function updateRideAvailability(req: Request, res: Response): Promise<void
 }
 
 async function deleteRideAvailability(req: Request, res: Response): Promise<void> {
-  const { rideAvailabilityId } = req.params;
-  const ride = await getRideAvailabilityById(rideAvailabilityId);
+  const { rideAvailabilityId } = req.params as { rideAvailabilityId: string };
 
+  const ride = await getRideAvailabilityById(rideAvailabilityId);
   if (!ride) {
     res.status(404).json({ error: 'Ride not found' });
     return;
@@ -120,7 +103,9 @@ async function deleteRideAvailability(req: Request, res: Response): Promise<void
 }
 
 export {
-  createRideAvailability, deleteRideAvailability, getRideAvailabilities,
+  createRideAvailability,
+  deleteRideAvailability,
+  getRideAvailabilities,
   getRideAvailability,
   updateRideAvailability
 };
