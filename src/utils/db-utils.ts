@@ -1,25 +1,30 @@
-<<<<<<< HEAD
-export function parseDatabaseError(error: unknown): { status: number; message: string } {
-  return {
-    status: 500,
-    message: 'Database error',
-  };
-}
-=======
 import { QueryFailedError } from 'typeorm';
+
+type DatabaseConstraintError = {
+  type:
+    | 'unique'
+    | 'check'
+    | 'not null'
+    | 'foreign key'
+    | 'invalid input'
+    | 'string too long'
+    | 'numeric overflow'
+    | 'invalid datetime'
+    | 'unknown';
+  columnName?: string;
+  message?: string;
+  status?: number;
+};
 
 function parseDatabaseError(err: unknown): DatabaseConstraintError {
   if (!(err instanceof QueryFailedError)) {
     return { type: 'unknown', message: 'An unknown database error has occurred.' };
   }
 
-  // PostgreSQL error codes: https://www.postgresql.org/docs/current/errcodes-appendix.html
   const { code, column, detail } = err.driverError;
 
   switch (code) {
-    // Constraint violations
     case '23505': {
-      // unique_violation
       const match = detail?.match(/Key \((.+?)\)=/);
       const columnName = match?.[1] ?? '';
       return {
@@ -29,7 +34,6 @@ function parseDatabaseError(err: unknown): DatabaseConstraintError {
       };
     }
     case '23502': {
-      // not_null_violation
       const columnName = column ?? '';
       return {
         type: 'not null',
@@ -37,10 +41,9 @@ function parseDatabaseError(err: unknown): DatabaseConstraintError {
         message: `The '${columnName}' property must not be null.`,
       };
     }
-    case '23514': // check_violation
+    case '23514':
       return { type: 'check', message: 'Failed a check constraint.' };
     case '23503': {
-      // foreign_key_violation
       const match = detail?.match(/Key \((.+?)\)=/);
       const columnName = match?.[1] ?? '';
       return {
@@ -49,27 +52,23 @@ function parseDatabaseError(err: unknown): DatabaseConstraintError {
         message: `The '${columnName}' property references a non-existent record.`,
       };
     }
-
-    // Data validation errors
-    case '22P02': // invalid_text_representation
+    case '22P02':
       return {
         type: 'invalid input',
         message: 'Invalid input syntax (e.g., malformed UUID or wrong data type).',
       };
-    case '22001': // string_data_right_truncation
+    case '22001':
       return {
         type: 'string too long',
         message: 'A string value exceeds the maximum allowed length.',
       };
-    case '22003': // numeric_value_out_of_range
+    case '22003':
       return { type: 'numeric overflow', message: 'A numeric value is out of the allowed range.' };
-    case '22007': // invalid_datetime_format
+    case '22007':
       return { type: 'invalid datetime', message: 'Invalid date or time format.' };
-
     default:
       return { type: 'unknown', message: 'An unknown database error has occurred.' };
   }
 }
 
 export { parseDatabaseError };
->>>>>>> 60944adce58517649f9926934d658d8b244ac9ab
