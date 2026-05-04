@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request } from 'express';
 
 export function clearSession(req: Request): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -7,9 +7,6 @@ export function clearSession(req: Request): Promise<void> {
         reject(error);
         return;
       }
-
-      req.session.isLoggedIn = false;
-      req.session.authenticatedUser = undefined;
       resolve();
     });
   });

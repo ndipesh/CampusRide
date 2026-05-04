@@ -25,7 +25,6 @@ function makeSafeUserResponse(user: {
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
   const validatedBody = RegisterUserSchema.safeParse(req.body);
-
   if (!validatedBody.success) {
     res.status(400).json({
       error: validatedBody.error.flatten(),
@@ -37,7 +36,6 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
 
   try {
     const passwordHash = await argon2.hash(password);
-
     const user = await addUser({
       email,
       passwordHash,
@@ -45,17 +43,15 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
       displayName: displayName ?? null,
       bio: bio ?? null,
     });
-
     res.status(201).json(makeSafeUserResponse(user));
   } catch (error) {
     const dbError = parseDatabaseError(error);
-    res.status(dbError.status).json({ error: dbError.message });
+    res.status(dbError.status ?? 500).json({ error: dbError.message });
   }
 }
 
 export async function loginUser(req: Request, res: Response): Promise<void> {
   const validatedBody = LoginSchema.safeParse(req.body);
-
   if (!validatedBody.success) {
     res.status(400).json({
       error: validatedBody.error.flatten(),
@@ -67,21 +63,18 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
 
   try {
     const user = await getUserByEmail(email);
-
     if (user === null) {
       res.status(403).json({ error: 'Invalid credentials' });
       return;
     }
 
     const passwordMatches = await argon2.verify(user.passwordHash, password);
-
     if (!passwordMatches) {
       res.status(403).json({ error: 'Invalid credentials' });
       return;
     }
 
     await clearSession(req);
-
     req.session.isLoggedIn = true;
     req.session.authenticatedUser = {
       userId: user.id,
@@ -112,15 +105,12 @@ export async function logoutUser(req: Request, res: Response): Promise<void> {
 
 export async function getUserProfile(req: Request, res: Response): Promise<void> {
   const userId = req.params.userId as string;
-
   try {
     const user = await getUserById(userId);
-
     if (user === null) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
-
     res.status(200).json(makeSafeUserResponse(user));
   } catch (error) {
     const dbError = parseDatabaseError(error);
@@ -128,4 +118,12 @@ export async function getUserProfile(req: Request, res: Response): Promise<void>
       error: dbError.message ?? 'Internal server error',
     });
   }
+}
+export async function getMe(req: Request, res: Response): Promise<void> {
+  if (!req.session.isLoggedIn) {
+    res.sendStatus(401);
+    return;
+  }
+
+  res.json(req.session.authenticatedUser);
 }
