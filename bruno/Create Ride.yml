@@ -1,0 +1,26 @@
+info:
+  name: Create Ride
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/rideAvailabilities
+  body:
+    type: json
+    data: |-
+      {
+        "driverId": "019d8f1b-2d30-76fd-aae2-6f1b817e2592",
+        "pickupLocation": "ASU Campus",
+        "destination": "Walmart",
+        "departureTime": "2026-04-15T08:00:00.000Z",
+        "availableSeats": 3,
+        "notes": "I have a blue Honda Civic"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
